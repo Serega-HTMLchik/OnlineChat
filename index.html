@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поболтаем?</title>
+    <link rel="stylesheet" href="stile.css">
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="container">
+            <ul id="messagesList"></ul>
+            <div class="input_container">
+                <input id="messaage" placeholder=" Enter message" autocomplete="off">
+                <button id="btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD7EyYv1ktWXHhHW-gdMk1i4zQqQlgTlc",
+            authDomain: "chat2-12cb9.firebaseapp.com",
+            projectId: "chat2-12cb9",
+            storageBucket: "chat2-12cb9.appspot.com",
+            messagingSenderId: "702351742062",
+            appId: "1:702351742062:web:c4f9bb8ed64384ad00427f"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        //import {getFirestore, collection, getDocs, onSnapshot, doc} from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";     
+        import { getDatabase, set, ref, onValue, push, child, onChildAdded, onChildRemoved } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+        const db = getDatabase(app);
+        //     const c = collection(db, 'chat');
+        //     const s = await getDocs(c);
+        //     const data = s.docs.map(doc=>doc.data());
+        //     console.log(data);
+        //     const unsub = onSnapshot(doc(db, "chat", "SF"), (doc) => {
+        //        console.log("Current data: ", doc.data("message"));
+        //    });
+        //    /**-------------------------------------------------------------------------------*/
+        let id = 0;
+        var myName = prompt("Enter your name");
+
+        function sendMessage() {
+
+            var message = document.getElementById("messaage").value;
+
+            const idMessage = push(child(ref(db), 'messages')).key;
+            set(ref(db, 'messages/' + idMessage), {
+                sender: myName,
+                message: message
+            })
+                .then(() => {
+                    console.log("success");
+                })
+                .catch((error) => {
+                    alert("unsuccessful, error");
+                });
+            document.getElementById("messaage").value = "";
+        }
+
+
+        var postElement = document.getElementById("messagesList");
+        //     var updateStarCount = function(elemant,value){
+        //         var html="";
+        //         html += "<li>"
+        //         html += value.sender+ ": " + value.message;
+        //         html += "</li>";
+        //         postElement.innerHTML += html;
+        //     }
+        var addCommentElement = function (postElement, key, sender, message) {
+            var html = "";
+            html += "<li data-key='";
+            html += key;
+            html += "'><div class='li_div_message'>";
+            html += "<span style='font-weight:600; color: aquamarine;'>" + sender + ": </span>" + message;
+            html += "</span></li>";
+            postElement.innerHTML += html;
+        }
+        var removeCommentElement = function (key, sender, message) {
+            let list = document.querySelectorAll('li');
+            if (list.length > 0) {
+                for (let index = 0; index < list.length; index++) {
+                    let li = list[index];
+                    if (li.getAttribute("data-key") == key) {
+                        li.firstElementChild.innerHTML = "Message deleted";
+                    }
+                }
+            }
+
+        }
+        const starCountRef = ref(db, "messages/");
+        //     onValue(starCountRef, (snapshot) => {
+        //         snapshot.forEach((childSnapshot) => {
+        //          const childKey = childSnapshot.key;
+        //          //const childData = childSnapshot.val();
+        //        
+        //          updateStarCount(postElement, childData);
+        //         })
+        //     });
+        onChildAdded(starCountRef, (data) => {
+            addCommentElement(postElement, data.key, data.val().sender, data.val().message);
+        });
+        onChildRemoved(starCountRef, (data) => {
+            removeCommentElement(data.key, data.val().sender, data.val().message);
+        });
+
+
+        var btn = document.getElementById('btn');
+        btn.addEventListener('click', sendMessage);
+        addEventListener('keydown', function (event) {
+            if (event.keyCode == 13)
+                sendMessage();
+        })
+    </script>
+</body>
+
+</html>
