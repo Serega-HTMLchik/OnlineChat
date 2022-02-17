@@ -71,7 +71,6 @@
                 });
             document.getElementById("messaage").value = "";
             let color = makeColor(6);
-            console.log(color);
             document.querySelector('.wrap').style.background = 'linear-gradient(45deg, #' + color + ', #ff9472)'
         }
 
@@ -79,9 +78,6 @@
         var postElement = document.getElementById("messagesList");
 
         var addCommentElement = function (postElement, key, sender, message) {
-            if (sender == myName) {
-
-            }
             var html = "";
             html += "<li data-key='";
             html += key;
@@ -89,23 +85,23 @@
             if (sender == myName) {
                 html += "myMessage";
             }
-            html += "'><div class='li_div_message'>";
-
-
-
+            html += "'><span class='before'></span><div class='li_div_message'>";
             html += "<span style='font-weight:600; color: aquamarine;'>" + sender + ": </span>" + message;
             html += "</span></li>";
             postElement.innerHTML += html;
             postElement.documentLastC
             postElement.lastElementChild.scrollIntoView(top);
+
+
         }
+
         var removeCommentElement = function (key, sender, message) {
             let list = document.querySelectorAll('li');
             if (list.length > 0) {
                 for (let index = 0; index < list.length; index++) {
                     let li = list[index];
                     if (li.getAttribute("data-key") == key) {
-                        li.firstElementChild.innerHTML = "Message deleted";
+                        li.lastElementChild.innerHTML = "Message deleted";
                     }
                 }
             }
@@ -115,6 +111,22 @@
 
         onChildAdded(starCountRef, (data) => {
             addCommentElement(postElement, data.key, data.val().sender, data.val().message);
+            /*УДАЛЕНИЕ*/
+            var btnDels = document.querySelectorAll('.myMessage .before');
+            if (btnDels.length > 0) {
+                for (let index = 0; index < btnDels.length; index++) {
+                    let btnDel = btnDels[index];
+                    let key = btnDel.parentElement.getAttribute("data-key");
+                    btnDel.addEventListener('click', function () {
+                        const idMessage = key;
+                        set(ref(db, 'messages/' + idMessage), {
+                            sender: null,
+                            message: null
+                        });
+                    });
+                }
+            }
+
         });
         onChildRemoved(starCountRef, (data) => {
             removeCommentElement(data.key, data.val().sender, data.val().message);
@@ -127,6 +139,15 @@
             if (event.keyCode == 13)
                 sendMessage();
         })
+
+
+
+
+
+
+
+
+
     </script>
 </body>
 

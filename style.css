@@ -82,6 +82,7 @@ h1,h2,h3,h4,h5,h6{color: #000000;
     width: 20%;
     height: 30px;
     min-width: 60px;
+    background-color: #efefef;
 }
 #messagesList{
     width: 100%;
@@ -104,8 +105,7 @@ h1,h2,h3,h4,h5,h6{color: #000000;
 .myMessage .li_div_message{
     background-color:#dd03e4;
 }
-.myMessage::before{
-    content: '';
+.myMessage .before{
     cursor: pointer;
     display: inline-block;
     width: 24px;
