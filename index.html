@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Поболтаем?</title>
-    <link rel="stylesheet" href="stile.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -38,16 +39,20 @@
         //import {getFirestore, collection, getDocs, onSnapshot, doc} from "https://www.gstatic.com/firebasejs/9.6.6/firebase-firestore.js";     
         import { getDatabase, set, ref, onValue, push, child, onChildAdded, onChildRemoved } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
         const db = getDatabase(app);
-        //     const c = collection(db, 'chat');
-        //     const s = await getDocs(c);
-        //     const data = s.docs.map(doc=>doc.data());
-        //     console.log(data);
-        //     const unsub = onSnapshot(doc(db, "chat", "SF"), (doc) => {
-        //        console.log("Current data: ", doc.data("message"));
-        //    });
-        //    /**-------------------------------------------------------------------------------*/
-        let id = 0;
+
+        /**-------------------------------------------------------------------------------*/
         var myName = prompt("Enter your name");
+        var wrapGradient = document.querySelector('.wrap');
+        function makeColor(length) {
+            var result = '';
+            var characters = 'ABCDEF0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() *
+                    charactersLength));
+            }
+            return result;
+        }
 
         function sendMessage() {
 
@@ -65,25 +70,34 @@
                     alert("unsuccessful, error");
                 });
             document.getElementById("messaage").value = "";
+            let color = makeColor(6);
+            console.log(color);
+            document.querySelector('.wrap').style.background = 'linear-gradient(45deg, #' + color + ', #ff9472)'
         }
 
 
         var postElement = document.getElementById("messagesList");
-        //     var updateStarCount = function(elemant,value){
-        //         var html="";
-        //         html += "<li>"
-        //         html += value.sender+ ": " + value.message;
-        //         html += "</li>";
-        //         postElement.innerHTML += html;
-        //     }
+
         var addCommentElement = function (postElement, key, sender, message) {
+            if (sender == myName) {
+
+            }
             var html = "";
             html += "<li data-key='";
             html += key;
+            html += "' class='";
+            if (sender == myName) {
+                html += "myMessage";
+            }
             html += "'><div class='li_div_message'>";
+
+
+
             html += "<span style='font-weight:600; color: aquamarine;'>" + sender + ": </span>" + message;
             html += "</span></li>";
             postElement.innerHTML += html;
+            postElement.documentLastC
+            postElement.lastElementChild.scrollIntoView(top);
         }
         var removeCommentElement = function (key, sender, message) {
             let list = document.querySelectorAll('li');
@@ -98,14 +112,7 @@
 
         }
         const starCountRef = ref(db, "messages/");
-        //     onValue(starCountRef, (snapshot) => {
-        //         snapshot.forEach((childSnapshot) => {
-        //          const childKey = childSnapshot.key;
-        //          //const childData = childSnapshot.val();
-        //        
-        //          updateStarCount(postElement, childData);
-        //         })
-        //     });
+
         onChildAdded(starCountRef, (data) => {
             addCommentElement(postElement, data.key, data.val().sender, data.val().message);
         });
