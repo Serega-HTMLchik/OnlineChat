@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Поболтаем?</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
@@ -41,7 +41,10 @@
         const db = getDatabase(app);
 
         /**-------------------------------------------------------------------------------*/
+
+
         var myName = prompt("Enter your name");
+
         var wrapGradient = document.querySelector('.wrap');
         function makeColor(length) {
             var result = '';
@@ -53,7 +56,7 @@
             }
             return result;
         }
-
+        /*SEND MESSAGE*/
         function sendMessage() {
 
             var message = document.getElementById("messaage").value;
@@ -73,7 +76,7 @@
             let color = makeColor(6);
             document.querySelector('.wrap').style.background = 'linear-gradient(45deg, #' + color + ', #ff9472)'
         }
-
+        /*---------------------------*/
 
         var postElement = document.getElementById("messagesList");
 
@@ -128,6 +131,7 @@
             }
 
         });
+
         onChildRemoved(starCountRef, (data) => {
             removeCommentElement(data.key, data.val().sender, data.val().message);
         });
@@ -139,12 +143,6 @@
             if (event.keyCode == 13)
                 sendMessage();
         })
-
-
-
-
-
-
 
 
 
